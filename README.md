@@ -25,8 +25,7 @@ How to Run
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
-
-Perfect, Harshita 🌿 — here’s your **Week 2 `README.md`** file, fully written for your GitHub repository (you can replace your current one or add below the Week 1 section).
+```
 
  🌿 Air Quality Prediction – Week 2 (Sustainability Project)
 
