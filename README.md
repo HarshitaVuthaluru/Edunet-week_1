@@ -115,7 +115,7 @@ Week 3 Improvements
 | Feature Importance   | Added feature importance analysis to identify which pollutants contribute most to AQI prediction.                        |
 | Downloadable Reports | Enabled users to download prediction results and visual analysis as CSV files from the Streamlit interface.              |
 | Streamlined UI       | Added a third tab for feature importance and downloadable analytics, improving the overall dashboard flow.               |
-| Model Saving         | Final optimized model saved as `air_quality_classifier_week3.pkl` for direct use within the dashboard.                   |
+| Model Saving         | Final optimized model saved as `air_quality_classifier_week3_compressed.pkl` for direct use within the dashboard.                   |
 
 Features
 
@@ -151,7 +151,7 @@ Make sure the following files are in the same folder:
 
 ```
 app.py
-air_quality_classifier_week3.pkl
+air_quality_classifier_week3_compressed.pkl
 city_day.csv
 requirements.txt
 ```
@@ -162,7 +162,7 @@ Repository Structure
 AI-ML-Sustainability-Week3/
 │
 ├── app.py
-├── air_quality_classifier_week3.pkl
+├── air_quality_classifier_week3_compressed.pkl
 ├── city_day.csv
 ├── feature_importance.png
 ├── requirements.txt
