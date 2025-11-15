@@ -5,97 +5,136 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Air Quality Prediction 🌿", page_icon="🌤️", layout="wide")
+st.set_page_config(page_title="Air Quality Prediction – Final Week", page_icon="🌿", layout="wide")
 
-# ---------- TITLE ----------
-st.title("🌿 Air Quality Prediction – Week 2")
-st.markdown("### Enhanced Model + Interactive Visualizations")
+# -------------------------------------------------------
+# TITLE
+# -------------------------------------------------------
+st.title("🌿 Final Week – Air Quality Prediction Dashboard")
+st.markdown("### ✔️ Enhanced Model | ✔️ Analytics | ✔️ Visual Insights | ✔️ Feature Importance")
 
-# ---------- LOAD MODEL ----------
+# -------------------------------------------------------
+# LOAD MODEL
+# -------------------------------------------------------
 try:
-    model = joblib.load("air_quality_classifier_week2.pkl")
-    st.success("✅ Improved model loaded successfully!")
+    model = joblib.load("air_quality_classifier_week3.pkl")
+    st.success("✅ Final Week Model Loaded Successfully!")
 except:
-    st.warning("⚠️ Model not found. Please upload `air_quality_classifier_week2.pkl`.")
+    st.warning("⚠️ Week-3 Model Not Found. Please upload `air_quality_classifier_week3.pkl`.")
 
-# ---------- SIDEBAR INPUT ----------
-st.sidebar.header("🔢 Input Pollutant Values")
-pm25 = st.sidebar.number_input("PM2.5 (µg/m³)", 0.0, 1000.0, 60.0)
-pm10 = st.sidebar.number_input("PM10 (µg/m³)", 0.0, 1000.0, 90.0)
-no2 = st.sidebar.number_input("NO₂ (µg/m³)", 0.0, 500.0, 25.0)
-so2 = st.sidebar.number_input("SO₂ (µg/m³)", 0.0, 500.0, 15.0)
-co = st.sidebar.number_input("CO (mg/m³)", 0.0, 10.0, 1.0)
-o3 = st.sidebar.number_input("O₃ (µg/m³)", 0.0, 500.0, 30.0)
+# -------------------------------------------------------
+# SIDEBAR INPUT
+# -------------------------------------------------------
+st.sidebar.header("🔢 Enter Pollutant Levels")
 
-# ---------- TABS ----------
-tab1, tab2 = st.tabs(["🔮 Prediction", "📊 Visualizations"])
+inputs = {
+    "PM2.5": st.sidebar.number_input("PM2.5 (µg/m³)", 0.0, 1000.0, 60.0),
+    "PM10": st.sidebar.number_input("PM10 (µg/m³)", 0.0, 1000.0, 90.0),
+    "NO2": st.sidebar.number_input("NO₂ (µg/m³)", 0.0, 500.0, 25.0),
+    "SO2": st.sidebar.number_input("SO₂ (µg/m³)", 0.0, 500.0, 15.0),
+    "CO": st.sidebar.number_input("CO (mg/m³)", 0.0, 10.0, 1.0),
+    "O3": st.sidebar.number_input("O₃ (µg/m³)", 0.0, 500.0, 30.0)
+}
 
-# =====================================================
-# TAB 1 – PREDICTION
-# =====================================================
+feature_values = np.array([[v for v in inputs.values()]])
+
+# -------------------------------------------------------
+# TABS
+# -------------------------------------------------------
+tab1, tab2, tab3, tab4 = st.tabs([
+    "🔮 Prediction",
+    "📊 Visualizations",
+    "🔥 Feature Importance",
+    "📥 Download Reports"
+])
+
+# -------------------------------------------------------
+# TAB 1 – Prediction
+# -------------------------------------------------------
 with tab1:
-    st.subheader("Predict Air Quality Category")
-    if st.button("🌤️ Predict AQI"):
-        data = np.array([[pm25, pm10, no2, so2, co, o3]])
-        prediction = model.predict(data)[0]
-        categories = ['Good', 'Moderate', 'Poor', 'Satisfactory', 'Severe', 'Very Poor']
+    st.subheader("🌤️ Air Quality Prediction")
 
-        if prediction < len(categories):
-            st.success(f"Predicted AQI Category: **{categories[prediction]}**")
+    if st.button("Predict AQI Category"):
+        prediction = model.predict(feature_values)[0]
+
+        labels = ['Good', 'Satisfactory', 'Moderate', 'Poor', 'Very Poor', 'Severe']
+
+        if prediction < len(labels):
+            st.success(f"### 🌟 Predicted AQI Category: **{labels[prediction]}**")
         else:
-            st.error("Unexpected output – check model.")
+            st.error("Unexpected output from model.")
 
-        # --- Bar Graph for pollutant levels ---
-        pollutants = ['PM2.5', 'PM10', 'NO₂', 'SO₂', 'CO', 'O₃']
-        values = [pm25, pm10, no2, so2, co, o3]
-
+        # ---------------- BAR CHART ----------------
+        st.write("### Pollutant Levels Input Graph")
         fig, ax = plt.subplots()
-        bars = ax.bar(pollutants, values)
-        for bar, val in zip(bars, values):
-            if val < 50: bar.set_color('green')
-            elif val < 100: bar.set_color('orange')
-            else: bar.set_color('red')
-        ax.set_ylabel("Concentration (µg/m³)")
-        ax.set_title("Pollutant Contribution")
+        ax.bar(inputs.keys(), inputs.values())
+        ax.set_ylabel("Concentration")
+        plt.xticks(rotation=45)
         st.pyplot(fig)
 
-# =====================================================
-# TAB 2 – VISUALIZATIONS
-# =====================================================
+# -------------------------------------------------------
+# TAB 2 – Visualizations
+# -------------------------------------------------------
 with tab2:
-    st.subheader("City-wise & Trend Visualizations")
+    st.subheader("📊 Dataset Insights")
 
-    # Load dataset
     try:
         df = pd.read_csv("city_day.csv")
+        st.success("Dataset Loaded Successfully!")
+
         df = df[['City', 'PM2.5', 'PM10', 'NO2', 'SO2', 'CO', 'O3', 'AQI']]
         df.dropna(inplace=True)
 
-        # --- Top 10 Cities by Average PM2.5 ---
+        # ---------------- TOP CITY BAR CHART ----------------
+        st.write("### 🌆 Top Polluted Cities (Avg PM2.5)")
         city_avg = df.groupby('City')['PM2.5'].mean().sort_values(ascending=False).head(10)
-        st.write("### 🌆 Top 10 Cities by Average PM2.5 Levels")
-        fig1, ax1 = plt.subplots(figsize=(8,4))
-        sns.barplot(x=city_avg.index, y=city_avg.values, palette='viridis', ax=ax1)
-        ax1.set_ylabel("Average PM2.5")
-        ax1.set_xlabel("City")
-        ax1.set_title("Top 10 Cities by Pollution Level")
+
+        fig1, ax1 = plt.subplots()
+        sns.barplot(x=city_avg.index, y=city_avg.values, palette="viridis", ax=ax1)
         plt.xticks(rotation=45)
+        ax1.set_ylabel("Avg PM2.5")
         st.pyplot(fig1)
 
-        # --- Trend Plot for Selected City ---
-        city_list = df['City'].unique()
-        city_name = st.selectbox("Select a City for Trend Plot", city_list)
-        city_data = df[df['City'] == city_name].head(100)  # limit for speed
+        # ---------------- TREND PLOT ----------------
+        st.write("### 📈 Trend for Selected City")
+        city_choice = st.selectbox("Select city:", df['City'].unique())
+        city_data = df[df['City'] == city_choice].head(100)
 
-        fig2, ax2 = plt.subplots(figsize=(8,4))
-        ax2.plot(city_data.index, city_data['PM2.5'], color='crimson', label='PM2.5')
-        ax2.plot(city_data.index, city_data['PM10'], color='orange', label='PM10')
+        fig2, ax2 = plt.subplots()
+        ax2.plot(city_data['PM2.5'], label="PM2.5")
+        ax2.plot(city_data['PM10'], label="PM10")
         ax2.legend()
-        ax2.set_title(f"Pollutant Trend – {city_name}")
-        ax2.set_xlabel("Days")
-        ax2.set_ylabel("Concentration (µg/m³)")
+        ax2.set_title(f"Pollution Trend – {city_choice}")
         st.pyplot(fig2)
 
     except FileNotFoundError:
-        st.error("Dataset file 'city_day.csv' not found. Please upload it to your folder.")
+        st.error("❌ city_day.csv not found. Upload the dataset.")
+
+# -------------------------------------------------------
+# TAB 3 – Feature Importance
+# -------------------------------------------------------
+with tab3:
+    st.subheader("🔥 Feature Importance (From Week-3 Model)")
+
+    try:
+        importances = model.feature_importances_
+        features = list(inputs.keys())
+
+        fig3, ax3 = plt.subplots()
+        sns.barplot(x=features, y=importances, palette="magma", ax=ax3)
+        plt.xticks(rotation=45)
+        st.pyplot(fig3)
+
+    except:
+        st.warning("⚠️ Feature Importance Not Available for Your Model.")
+
+# -------------------------------------------------------
+# TAB 4 – Downloads
+# -------------------------------------------------------
+with tab4:
+    st.subheader("📥 Download Data & Reports")
+
+    try:
+        st.download_button("Download Clean Dataset CSV", df.to_csv(index=False), "cleaned_dataset.csv")
+    except:
+        st.info("Upload dataset to enable downloads.")
