@@ -104,7 +104,6 @@ Outputs
 # 🌿 Air Quality Prediction – Week 3 (Sustainability Project)
 
 Overview
-
 In Week 3, the project was further enhanced with a more optimized machine learning model, feature importance analysis, and downloadable reports.
 The model continues to predict Air Quality Index (AQI) categories using environmental parameters — PM2.5, PM10, NO₂, SO₂, CO, and O₃ — supporting sustainability through better pollution monitoring and analysis.
 
@@ -122,7 +121,7 @@ Features
 
 * Predicts AQI categories based on pollutant inputs
 * Shows pollutant contribution bar chart
-* Displays Top 10 polluted cities using PM2.5
+* Displays Top 10 polluted cities based on PM2.5
 * Provides city-wise pollutant trend graphs
 * Shows feature importance from the Week 3 model
 * Allows downloading analysis results from the UI
@@ -143,7 +142,7 @@ Results
 
 How to Run
 
-```bash
+```
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -179,6 +178,4 @@ Outputs
 * Prediction Tab: Predicts AQI and shows pollutant bar chart
 * Visualization Tab: Top 10 polluted cities and city-wise pollutant trends
 * Feature Importance Tab: Displays importance scores for each pollutant and allows report download
-
-
 
